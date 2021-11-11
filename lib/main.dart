@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:quizzler/queation.dart';
 
 void main() => runApp(const Quizzler());
 
@@ -32,23 +33,37 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Icon> answersList = [
-    Icon(
-      Icons.check,
-      color: Colors.green,
+  List<Question> questionList = [
+    Question(
+      questionText: 'You can lead a cow down stairs but not up stairs',
+      answer: false,
     ),
-    Icon(
-      Icons.close,
-      color: Colors.red,
+    Question(
+      questionText: 'Approximately one quarter of human bones are in the feet.',
+      answer: true,
+    ),
+    Question(
+      questionText: 'A slug\'s blood is green.',
+      answer: true,
     ),
   ];
-  List<String> questions = [
-    'You can lead a cow down stairs but not up stairs.',
-    'Approximately one quarter of human bones are in the feet.',
-    'A slug\'s blood is green.',
-  ];
+  List<Icon> answersList = [];
 
   int questionNumber = 0;
+
+  void resetList() {
+    if (questionList.length - 1 > questionNumber) {
+      setState(() {
+        ++questionNumber;
+      });
+    } else {
+      setState(() {
+        questionNumber = 0;
+        answersList.clear();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -61,7 +76,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questions[questionNumber],
+                questionList[questionNumber].questionText,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -86,13 +101,13 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  questionNumber++;
-                  answersList.add(Icon(
-                    Icons.close,
-                    color: Colors.red,
-                  ));
-                });
+                bool correctAnswer = questionList[questionNumber].answer;
+                if (correctAnswer == true) {
+                  answersList.add(Icon(Icons.check, color: Colors.green));
+                } else {
+                  answersList.add(Icon(Icons.close, color: Colors.red));
+                }
+                resetList();
               },
             ),
           ),
@@ -112,10 +127,13 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                questionNumber++;
-                setState(() {
-                  answersList.clear();
-                });
+                bool correctAnswer = questionList[questionNumber].answer;
+                if (correctAnswer == false) {
+                  answersList.add(Icon(Icons.check, color: Colors.green));
+                } else {
+                  answersList.add(Icon(Icons.close, color: Colors.red));
+                }
+                resetList();
               },
             ),
           ),
@@ -125,9 +143,3 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 }
-
-/*
-question1: 'You can lead a cow down stairs but not up stairs.', false,
-question2: 'Approximately one quarter of human bones are in the feet.', true,
-question3: 'A slug\'s blood is green.', true,
-*/
