@@ -66,6 +66,12 @@ class QuizBrain {
     return _answersList;
   }
 
+  void getScore() {}
+
+  int get questionNumber {
+    return _questionNumber;
+  }
+
   void addCorrect() {
     _answersList.add(const Icon(Icons.check, color: Colors.green));
   }

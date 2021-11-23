@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:quizzler/widgets/quiz_brain.dart';
 
 class Result extends StatelessWidget {
-  const Result({Key? key, required this.score}) : super(key: key);
+  Result({Key? key}) : super(key: key);
 
-  final int score;
+  QuizBrain quizBrain = QuizBrain();
+
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('You scored $score points'),
+        child: Text('You scored points'),
       ),
     );
   }

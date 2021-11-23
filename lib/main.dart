@@ -35,10 +35,11 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   QuizBrain quizBrain = QuizBrain();
 
-  void resetList() {
+  void nextQuestion() {
     setState(() {
       quizBrain.nextQuestion();
     });
+    quizBrain.getScore();
   }
 
   @override
@@ -47,6 +48,14 @@ class _QuizPageState extends State<QuizPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 30),
+            child: Text('Question No. ${quizBrain.questionNumber + 1}',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 20)),
+          ),
+        ),
         Expanded(
           flex: 5,
           child: Padding(
@@ -84,7 +93,7 @@ class _QuizPageState extends State<QuizPage> {
                 } else {
                   quizBrain.addFalse();
                 }
-                resetList();
+                nextQuestion();
               },
             ),
           ),
@@ -110,7 +119,7 @@ class _QuizPageState extends State<QuizPage> {
                 } else {
                   quizBrain.addFalse();
                 }
-                resetList();
+                nextQuestion();
               },
             ),
           ),
