@@ -35,11 +35,25 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   QuizBrain quizBrain = QuizBrain();
 
-  void nextQuestion() {
+  void reset() {
     setState(() {
-      quizBrain.nextQuestion();
+      quizBrain.cleanAnswers();
     });
-    quizBrain.getScore();
+  }
+
+  void nextQuestion(BuildContext context) {
+    setState(() {
+      quizBrain.nextQuestion(context, reset);
+    });
+  }
+
+  void checkAnswer(bool userPickerAnswer) {
+    bool correctAnswer = quizBrain.getAnswer();
+    if (userPickerAnswer == correctAnswer) {
+      quizBrain.addCorrect();
+    } else {
+      quizBrain.addFalse();
+    }
   }
 
   @override
@@ -87,13 +101,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                bool correctAnswer = quizBrain.getAnswer();
-                if (correctAnswer == true) {
-                  quizBrain.addCorrect();
-                } else {
-                  quizBrain.addFalse();
-                }
-                nextQuestion();
+                checkAnswer(true);
+                nextQuestion(context);
               },
             ),
           ),
@@ -113,13 +122,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                bool correctAnswer = quizBrain.getAnswer();
-                if (correctAnswer == false) {
-                  quizBrain.addCorrect();
-                } else {
-                  quizBrain.addFalse();
-                }
-                nextQuestion();
+                checkAnswer(false);
+                nextQuestion(context);
               },
             ),
           ),

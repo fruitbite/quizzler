@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quizzler/model/queation.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class QuizBrain {
   int _questionNumber = 0;
 
-  List<Icon> _answersList = [];
+  final List<Icon> _answersList = [];
+
+  bool isPassed = false;
 
   final List<Question> _questionList = [
     Question(
@@ -62,22 +65,18 @@ class QuizBrain {
     ),
   ];
 
-  List<Icon> answerList() {
-    return _answersList;
-  }
+  //methods
 
-  void getScore() {}
-
-  int get questionNumber {
-    return _questionNumber;
+  void incraseQuestionNumber() {
+    _questionNumber++;
   }
 
   void addCorrect() {
-    _answersList.add(const Icon(Icons.check, color: Colors.green));
+    _answersList.add(checkIcon);
   }
 
   void addFalse() {
-    _answersList.add(const Icon(Icons.close, color: Colors.red));
+    _answersList.add(crossIcon);
   }
 
   void cleanAnswers() {
@@ -85,12 +84,56 @@ class QuizBrain {
     _questionNumber = 0;
   }
 
-  void nextQuestion() {
+  void nextQuestion(BuildContext context, Function reset) {
     if (_questionNumber < getLength() - 1) {
       _questionNumber++;
     } else {
-      cleanAnswers();
+      List<Icon> contain =
+          _answersList.where((element) => element.icon == Icons.check).toList();
+      if (contain.length >= 7) {
+        isPassed = true;
+      } else if (contain.length < 7) {
+        isPassed = false;
+      }
+      Alert(
+        closeFunction: reset(),
+        context: context,
+        type: isPassed ? AlertType.success : AlertType.error,
+        title: isPassed ? "Passed!" : 'Failed',
+        desc: "You have scored ${contain.length}/13.",
+        buttons: [
+          DialogButton(
+            child: const Text(
+              "Restart",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              reset();
+              Navigator.pop(context);
+            },
+            width: 120,
+          )
+        ],
+      ).show();
     }
+  }
+
+  Icon get checkIcon {
+    return const Icon(Icons.check, color: Colors.green);
+  }
+
+  Icon get crossIcon {
+    return const Icon(Icons.close, color: Colors.red);
+  }
+
+  //getters
+
+  List<Icon> answerList() {
+    return _answersList;
+  }
+
+  int get questionNumber {
+    return _questionNumber;
   }
 
   String getQuestionText() {
